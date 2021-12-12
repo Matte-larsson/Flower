@@ -7,6 +7,8 @@ import java.time.Clock
 import shared.Protocol
 import castor.SimpleActor
 import cask.endpoints.WsChannelActor
+import backend._
+
 
 class WebServer() {}
 object WebServer extends cask.Main {
@@ -21,6 +23,49 @@ object WebServer extends cask.Main {
 case class WebPageRoutes()(implicit cc: castor.Context, log: cask.Logger)
     extends cask.Routes {
 
+  val fs = new FlowerShop
+
+  @cask.get("/flowers")
+  def list() = {
+    val lista = fs.list()
+    val flowers = upickle.default.writeJs(lista)
+    ujson.Obj("Flowers" -> flowers)
+  }
+
+  @cask.postJson("/flowers")
+  def addFlower(
+      name: ujson.Value,
+      price: ujson.Value,
+      colour: ujson.Value,
+      stock: ujson.Value
+  ) = {
+    val f = Flower(name.str, price.num, colour.str, stock.num.toInt)
+    val id = fs.addFlower(f)
+    ujson.Obj("flower" -> id)
+  }
+
+    @cask.postJson("/flowers")
+  def delete(
+      name: ujson.Value,
+      price: ujson.Value,
+      colour: ujson.Value,
+      stock: ujson.Value
+  ) = {
+    val f = Flower(name.str, price.num, colour.str, stock.num.toInt)
+    val namn = f.name
+    val id = fs.delete(namn)
+    val removed = upickle.default.writeJs(id)
+    ujson.Obj("remove" -> removed)
+  }
+  def update(fid: String, name: ujson.Value) = {
+    val f = fs.get(fid).get
+    val updatedF = f.copy(name = name.str)
+    fs.update(fid, updatedF)
+    ujson.Obj("updated" -> true)
+  }
+
+  initialize()
+
   // hack to make cask serve the index.html page if browser requests subfolder /htm/about
   // fix this properly in nginx reverse proxy
   @cask.get("/htm", subpath = true)
@@ -28,7 +73,7 @@ case class WebPageRoutes()(implicit cc: castor.Context, log: cask.Logger)
     val filePath: String =
       if request.remainingPathSegments.isEmpty ||
         (!request.remainingPathSegments.last.endsWith(".js") &&
-        !request.remainingPathSegments.last.endsWith(".js.map"))
+          !request.remainingPathSegments.last.endsWith(".js.map"))
       then "./vuegui/dist/index.html"
       else "./vuegui/dist/" + request.remainingPathSegments.mkString("/")
       end if
