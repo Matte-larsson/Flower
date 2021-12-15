@@ -9,7 +9,6 @@ import castor.SimpleActor
 import cask.endpoints.WsChannelActor
 import backend._
 
-
 class WebServer() {}
 object WebServer extends cask.Main {
   override def port: Int = 8384
@@ -29,7 +28,7 @@ case class WebPageRoutes()(implicit cc: castor.Context, log: cask.Logger)
   def list() = {
     val lista = fs.list()
     val flowers = upickle.default.writeJs(lista)
-    ujson.Obj("Flowers" -> flowers)
+    ujson.Obj("flowers" -> flowers)
   }
 
   @cask.postJson("/flowers")
@@ -41,27 +40,19 @@ case class WebPageRoutes()(implicit cc: castor.Context, log: cask.Logger)
   ) = {
     val f = Flower(name.str, price.num, colour.str, stock.num.toInt)
     val id = fs.addFlower(f)
-    ujson.Obj("flower" -> id)
+    ujson.Obj("flowerId" -> id)
   }
-
-    @cask.postJson("/flowers")
-  def delete(
-      name: ujson.Value,
-      price: ujson.Value,
-      colour: ujson.Value,
-      stock: ujson.Value
-  ) = {
-    val f = Flower(name.str, price.num, colour.str, stock.num.toInt)
-    val namn = f.name
-    val id = fs.delete(namn)
-    val removed = upickle.default.writeJs(id)
-    ujson.Obj("remove" -> removed)
-  }
+  @cask.postJson("/flowers/:fid/update")
   def update(fid: String, name: ujson.Value) = {
     val f = fs.get(fid).get
     val updatedF = f.copy(name = name.str)
     fs.update(fid, updatedF)
     ujson.Obj("updated" -> true)
+  }
+  @cask.getJson("/flowers/:fid")
+  def get(fid: String) = {
+    val f = fs.get(fid)
+    upickle.default.writeJs(f)
   }
 
   initialize()
