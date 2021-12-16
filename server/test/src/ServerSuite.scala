@@ -16,7 +16,7 @@ object ServerSuite extends TestSuite {
         requests.post(
           url = host + "/flowers",
           data =
-            """{"name": "rose", "price": 30, "colour": "red", "stock": 15}"""
+            """{"id": "id1","name": "rose", "price": 30, "stock": 15}"""
         )
       println("Nötter" + createResponse.text())
       val json = ujson.read(createResponse.text())
@@ -34,7 +34,7 @@ object ServerSuite extends TestSuite {
         requests.post(
           url = host + "/flowers",
           data =
-            """{"name": "rose", "price": 30, "colour": "red", "stock": 15}"""
+            """{"id": "id1","name": "rose", "price": 30, "stock": 15}"""
         )
       val createJson = ujson.read(createResponse.text())
       val fid = createJson("flowerId").str
@@ -46,12 +46,12 @@ object ServerSuite extends TestSuite {
 
       name ==> "rose"
     }
-    test("create, get and update") - withServer(WebServer) { host =>
+    test("create, update and get") - withServer(WebServer) { host =>
       val createResponse =
         requests.post(
           url = host + "/flowers",
           data =
-            """{"name": "rose", "price": 30, "colour": "red", "stock": 15}"""
+            """{"id":"id1","name": "rose", "price": 30, "stock": 15}"""
         )
 
       val createJson = ujson.read(createResponse.text())
@@ -64,7 +64,7 @@ object ServerSuite extends TestSuite {
         )
 
       val updateJson = ujson.read(updateResponse.text())
-      val updatedName = updateJson("updated").strOpt
+      val updatedName = updateJson("updated")
 
       val getResponse = requests.get(host + s"/flowers/$fid")
       val getJson = ujson.read(getResponse.text())

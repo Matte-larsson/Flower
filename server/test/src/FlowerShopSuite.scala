@@ -7,20 +7,20 @@ object FlowerShopSuite extends TestSuite {
   val tests = Tests {
     test("test add") - {
       val fs = new FlowerShop()
-      val fl = Flower("rose", 20.50, "red", 10)
+      val fl = Flower("id1","rose", 20.50, 10)
       fs.addFlower(fl)
 
       fs.list().size ==> 1
     }
-    test("test get") - {
+     test("test get") - {
       val fs = new FlowerShop()
-      val fl = Flower("rose", 20.50, "red", 10)
+      val fl = Flower("id1", "rose", 20.50, 10)
       val id = fs.addFlower(fl)
       val r = fs.get(id).get
 
       r ==> fl
       fl.name ==> "rose"
-    }
+    } 
     test("test list") - {
       val fs = new FlowerShop()
       val r = fs.list()
@@ -29,7 +29,7 @@ object FlowerShopSuite extends TestSuite {
     }
     test("test update ") - {
       val fs = new FlowerShop()
-      val fl = Flower("rose", 20.50, "red", 10)
+      val fl = Flower("id1","rose", 20.50, 10)
       val f1id = fs.addFlower(fl)
       val cpy = fs.get(f1id).get.copy(price = 30)
        val cpy2 = fl.copy(price = 30)
@@ -42,7 +42,7 @@ object FlowerShopSuite extends TestSuite {
     }
     test("test buy ") - {
       val fs = new FlowerShop()
-      val fl = Flower("rose", 20.50, "red", 10)
+      val fl = Flower("id1", "rose", 20.50, 10)
       val id = fs.addFlower(fl)
       val cost = fs.buy(id, 6)
       val updated = fs.get(id).get
@@ -52,8 +52,8 @@ object FlowerShopSuite extends TestSuite {
     }
     test("test delete ") - {
       val fs = new FlowerShop()
-      val fl = Flower("rose", 20.50, "red", 10)
-      val fl2 = Flower("ros", 20.50, "red", 10)
+      val fl = Flower("id1","rose", 20.50, 10)
+      val fl2 = Flower("id2","ros", 10.5, 10)
       val t = fs.addFlower(fl)
       fs.addFlower(fl2)
       fs.delete(t)

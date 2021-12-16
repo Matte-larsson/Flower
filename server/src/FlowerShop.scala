@@ -1,37 +1,39 @@
 package backend
 import java.util.UUID
 import upickle.default.{ReadWriter => RW, macroRW}
-case class Flower(name: String, price: Double, colour: String, stock: Int)
+case class Flower(id: FlowerId, name: String, price: Double, stock: Int)
 object Flower {
   implicit val rw: RW[Flower] = macroRW
 }
+type FlowerId = String
+
 class FlowerShop {
   var flowers: Map[String, Flower] = Map.empty
   
 
   def createID() = UUID.randomUUID.toString()
 
-  def addFlower(f: Flower): String = {
+  def addFlower(f: Flower): FlowerId = {
     val id = createID()
     flowers = flowers + (id -> f)
     id
   }
   def list(): List[Flower] = flowers.values.toList
 
-  def get(id: String): Option[Flower] = {
-    flowers.get(id)
+  def get(fid: FlowerId): Option[Flower] = {
+    flowers.get(fid)
   }
-  def update(id: String, f: Flower): Unit = {
-    flowers = flowers + (id -> f)
+  def update(fid: FlowerId, f: Flower): Unit = {
+    flowers = flowers + (fid -> f)
   }
-  def buy(n: String, amount: Int): Double = {
-    val f = get(n).get
+  def buy(fid: FlowerId, amount: Int): Double = {
+    val f = get(fid).get
     val newamount = f.stock - amount
-    update(n, f.copy(stock = newamount))
+    update(fid, f.copy(stock = newamount))
     f.price * amount
   }
-  def delete(f: String): Unit = {
-    val taBortF = flowers.removed(f)
+  def delete(fid: FlowerId): Unit = {
+    val taBortF = flowers.removed(fid)
     flowers = taBortF
   }
 

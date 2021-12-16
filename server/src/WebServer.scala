@@ -33,14 +33,14 @@ case class WebPageRoutes()(implicit cc: castor.Context, log: cask.Logger)
 
   @cask.postJson("/flowers")
   def addFlower(
+      id: ujson.Value,
       name: ujson.Value,
       price: ujson.Value,
-      colour: ujson.Value,
       stock: ujson.Value
   ) = {
-    val f = Flower(name.str, price.num, colour.str, stock.num.toInt)
-    val id = fs.addFlower(f)
-    ujson.Obj("flowerId" -> id)
+    val f = Flower(id.str, name.str, price.num, stock.num.toInt)
+    val fid = fs.addFlower(f)
+    ujson.Obj("flowerId" -> fid)
   }
   @cask.postJson("/flowers/:fid/update")
   def update(fid: String, name: ujson.Value) = {
