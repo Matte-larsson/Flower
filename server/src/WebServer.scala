@@ -55,7 +55,7 @@ case class WebPageRoutes()(implicit cc: castor.Context, log: cask.Logger)
     upickle.default.writeJs(f)
   }
 
-  initialize()
+    initialize()
 
   // hack to make cask serve the index.html page if browser requests subfolder /htm/about
   // fix this properly in nginx reverse proxy

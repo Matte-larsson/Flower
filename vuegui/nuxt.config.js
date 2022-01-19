@@ -42,6 +42,7 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    '@nuxtjs/axios'
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
@@ -49,5 +50,10 @@ export default {
   },
   router: {
     base: '/htm/'
+  },
+  publicRuntimeConfig: {
+    axios: {
+      baseURL: 'http://localhost:8384'
+    }
   }
 }
