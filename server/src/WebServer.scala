@@ -33,12 +33,11 @@ case class WebPageRoutes()(implicit cc: castor.Context, log: cask.Logger)
 
   @cask.postJson("/flowers")
   def addFlower(
-      id: ujson.Value,
       name: ujson.Value,
       price: ujson.Value,
       stock: ujson.Value
   ) = {
-    val f = Flower(id.str, name.str, price.num, stock.num.toInt)
+    val f = Flower("", name.str, price.num, stock.num.toInt)
     val fid = fs.addFlower(f)
     ujson.Obj("flowerId" -> fid)
   }
@@ -54,8 +53,13 @@ case class WebPageRoutes()(implicit cc: castor.Context, log: cask.Logger)
     val f = fs.get(fid)
     upickle.default.writeJs(f)
   }
+  @cask.delete("/flowers/:fid")
+  def delete(fid: String) = {
+    fs.delete(fid)
+    ujson.Obj("deleted" -> true)
+  }
 
-    initialize()
+  initialize()
 
   // hack to make cask serve the index.html page if browser requests subfolder /htm/about
   // fix this properly in nginx reverse proxy

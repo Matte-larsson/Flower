@@ -10,7 +10,7 @@ object FlowerShopSuite extends TestSuite {
       val fl = Flower("id1","rose", 20.50, 10)
       fs.addFlower(fl)
 
-      fs.list().size ==> 1
+      fs.list().size ==> 4
     }
      test("test get") - {
       val fs = new FlowerShop()
@@ -25,7 +25,7 @@ object FlowerShopSuite extends TestSuite {
       val fs = new FlowerShop()
       val r = fs.list()
 
-      r.size ==> 0
+      r.size ==> 3
     }
     test("test update ") - {
       val fs = new FlowerShop()
@@ -60,7 +60,7 @@ object FlowerShopSuite extends TestSuite {
 
       val r = fs.list()
 
-      r.size ==> 1
+      r.size ==> 4
     }
   }
 }

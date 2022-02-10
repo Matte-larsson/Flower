@@ -9,13 +9,15 @@ type FlowerId = String
 
 class FlowerShop {
   var flowers: Map[String, Flower] = Map.empty
-  
+  flowers = flowers + ("fid1" -> Flower("fid1", "ros", 10.0, 7))
+  flowers = flowers + ("fid2" -> Flower("fid2", "tulpan", 11.0, 9))
+  flowers = flowers + ("fid3" -> Flower("fid3", "solros", 7.0, 11))
 
   def createID() = UUID.randomUUID.toString()
 
   def addFlower(f: Flower): FlowerId = {
     val id = createID()
-    flowers = flowers + (id -> f)
+    flowers = flowers + (id -> f.copy(id = id))
     id
   }
   def list(): List[Flower] = flowers.values.toList

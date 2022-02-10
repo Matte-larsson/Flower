@@ -1,14 +1,53 @@
 <template lang="jade">
 <div>
-  <div>
+<div><Nav></div>
+  <div class="header">
+  <h1>FlowerShop</h1>
+  </div>
+  <div class="list">
   <ul id="array-rendering">
     <li v-for="f in flowers">
-      {{ f.id }} - {{f.name}} -{{f.price}} - {{f.stock}} - x // <--- Länk för en delete
+      {{ f.id }} - {{f.name}} -{{f.price}} - {{f.stock}} - <span @click="deleteFlower(f.id)"> x </span> -
+      <span @click="edit(f.id)"> edit </span>
     </li>
   </ul>
   </div>
-  <div><button @click="fetchFlower">Hämta</button></div>
-  <div><button @click="createFlower('ros')">Skapa</button></div>
+
+  <style>
+  .header {
+    padding: 30px;
+    text-align: center;
+    color: black;
+    font-size: 20px;
+  }
+  .textfields {
+    padding: 15px;
+    text-align: center;
+    color: black;
+    font-size: 25px;
+  }
+  .list {
+    padding: 15px;
+    text-align: center;
+    color: black;
+    font-size: 25px;
+  }
+
+  </style>
+  <div class="textfields">
+  <label for="name">name</label>
+  <input v-model="name" placeholder="enter name">
+  <br>
+  <br>
+  <label for="price">price</label>
+  <input v-model.number="price" placeholder="enter price">
+  <br>
+  <br>
+  <label for="stock">stock</label>
+  <input v-model.number="stock" placeholder="enter stock">
+  <br>
+  <br>
+  <div><button :disabled="validInput" @click="createFlower()">Skapa</button></div>
 </div>
 </template>
 
@@ -17,23 +56,60 @@ export default {
   data() {
     return {
       flowers: [],
+      name: "",
+      price: undefined,
+      stock: undefined,
     };
   },
+  computed: {
+    validInput: function () {
+      if (this.name != null && this.name.length >= 3 && this.price >= 1 && this.stock >= 1)  {
+        console.log("valid false");
+        return false; 
+      }
+       else return true;
+    }
+  },
   methods: {
+    edit(id) {
+      this.$router.push({
+        path: "/edit/" + id,
+      });
+    },
+    clearfields: function () {
+      this.name = "";
+      this.price = undefined;
+      this.stock = undefined;
+    },
+    deleteFlower: function (fid) {
+      this.$axios
+        .delete("/flowers/" + fid)
+
+        .then((response) => {
+          this.fetchFlower();
+        });
+    },
+
     fetchFlower: function () {
       this.$axios
         .get("/flowers")
         .then((response) => (this.flowers = response.data.flowers));
     },
-    createFlower: function (name) {
+    createFlower: function () {
       this.$axios
         .post("/flowers", {
-          id: "fid1",
-          name: name,
-          price: 150,
-          stock: 13
+          name: this.name,
+          price: this.price,
+          stock: this.stock,
+        })
+        .then((response) => {
+          this.fetchFlower();
+          this.clearfields();
         });
     },
+  },
+  created: function () {
+    this.fetchFlower();
   },
 };
 </script>

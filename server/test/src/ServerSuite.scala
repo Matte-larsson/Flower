@@ -9,14 +9,14 @@ object ServerSuite extends TestSuite {
 
       val flowers = json("flowers").arr
 
-      flowers.size ==> 0
+      flowers.size ==> 3
     }
     test("add and list") - withServer(WebServer) { host =>
       val createResponse =
         requests.post(
           url = host + "/flowers",
           data =
-            """{"id": "id1","name": "rose", "price": 30, "stock": 15}"""
+            """{"name": "rose", "price": 30, "stock": 15}"""
         )
       println("Nötter" + createResponse.text())
       val json = ujson.read(createResponse.text())
@@ -27,14 +27,14 @@ object ServerSuite extends TestSuite {
 
       val flowers = json2("flowers").arr
 
-      flowers.size ==> 1
+      flowers.size ==> 4
     }
     test("create and get") - withServer(WebServer) { host =>
       val createResponse =
         requests.post(
           url = host + "/flowers",
           data =
-            """{"id": "id1","name": "rose", "price": 30, "stock": 15}"""
+            """{"name": "rose", "price": 30, "stock": 15}"""
         )
       val createJson = ujson.read(createResponse.text())
       val fid = createJson("flowerId").str
@@ -51,7 +51,7 @@ object ServerSuite extends TestSuite {
         requests.post(
           url = host + "/flowers",
           data =
-            """{"id":"id1","name": "rose", "price": 30, "stock": 15}"""
+            """{"name": "rose", "price": 30, "stock": 15}"""
         )
 
       val createJson = ujson.read(createResponse.text())
@@ -72,6 +72,33 @@ object ServerSuite extends TestSuite {
       val name = getJson(0)("name").str
 
       name ==> "matte"
+
+    }
+    test("create and delete") - withServer(WebServer) { host =>
+      val createResponse =
+        requests.post(
+          url = host + "/flowers",
+          data =
+            """{"name": "rose", "price": 30, "stock": 15}"""
+        )
+
+      val createJson = ujson.read(createResponse.text())
+      val fid = createJson("flowerId").str
+
+      val deleteResponse =
+        requests.delete(
+          url = host + s"/flowers/$fid",
+        )
+
+      val updateJson = ujson.read(deleteResponse.text())
+      val updatedName = updateJson("deleted")
+
+      val getResponse = requests.get(host + s"/flowers/$fid")
+      val getJson = ujson.read(getResponse.text())
+
+      val deletedJson = updateJson("deleted").bool
+
+      deletedJson ==> true
 
     }
   }
