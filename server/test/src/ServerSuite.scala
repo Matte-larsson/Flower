@@ -9,7 +9,7 @@ object ServerSuite extends TestSuite {
 
       val flowers = json("flowers").arr
 
-      flowers.size ==> 3
+      flowers.size ==> 5
     }
     test("add and list") - withServer(WebServer) { host =>
       val createResponse =
@@ -27,7 +27,7 @@ object ServerSuite extends TestSuite {
 
       val flowers = json2("flowers").arr
 
-      flowers.size ==> 4
+      flowers.size ==> 6
     }
     test("create and get") - withServer(WebServer) { host =>
       val createResponse =
@@ -59,7 +59,7 @@ object ServerSuite extends TestSuite {
 
       val updateResponse =
         requests.post(
-          url = host + s"/flowers/$fid/update",
+          url = host + s"/flowers/$fid/updateName",
           data = """{"name": "matte"}"""
         )
 

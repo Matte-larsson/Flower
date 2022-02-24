@@ -3,37 +3,11 @@
 <div><Nav></div>
   <div class="header">
   <h1>FlowerShop</h1>
+  </div> 
+  <div class="uheader">
+  <h1>Add Flower</h1>
   </div>
-  <div class="list">
-  <ul id="array-rendering">
-    <li v-for="f in flowers">
-      {{ f.id }} - {{f.name}} -{{f.price}} - {{f.stock}} - <span @click="deleteFlower(f.id)"> x </span> -
-      <span @click="edit(f.id)"> edit </span>
-    </li>
-  </ul>
-  </div>
-
-  <style>
-  .header {
-    padding: 30px;
-    text-align: center;
-    color: black;
-    font-size: 20px;
-  }
-  .textfields {
-    padding: 15px;
-    text-align: center;
-    color: black;
-    font-size: 25px;
-  }
-  .list {
-    padding: 15px;
-    text-align: center;
-    color: black;
-    font-size: 25px;
-  }
-
-  </style>
+  
   <div class="textfields">
   <label for="name">name</label>
   <input v-model="name" placeholder="enter name">
@@ -49,6 +23,50 @@
   <br>
   <div><button :disabled="validInput" @click="createFlower()">Skapa</button></div>
 </div>
+
+  <div class="list">
+  <div class="button">
+  <ul id="array-rendering">
+    <li v-for="f in flowers">
+      {{ f.id }} - {{f.name}} -{{f.price}} - {{f.stock}} -  
+      <span @click="deleteFlower(f.id)"> x </span> -
+      <span @click="edit(f.id)"> edit </span>
+    </li>
+  </ul>
+  </div>
+
+  <style>
+  .header {
+    padding: 15px;
+    text-align: center;
+    color: black;
+    font-size: 30px;
+  }
+    .uheader {
+    padding: 10px 40px;
+    text-align: left;
+    color: black;
+    font-size: 20px;
+  }
+  .textfields {
+    padding: 40px;
+    text-align: left;
+    color: black;
+    font-size: 25px;
+  }
+  .list {
+    padding: 15px;
+    text-align: left;
+    color: black;
+    font-size: 25px;
+  }
+  .button {
+  cursor: pointer;
+  outline: none;
+}
+
+
+  </style>
 </template>
 
 <script>
@@ -63,12 +81,16 @@ export default {
   },
   computed: {
     validInput: function () {
-      if (this.name != null && this.name.length >= 3 && this.price >= 1 && this.stock >= 1)  {
+      if (
+        this.name != null &&
+        this.name.length >= 3 &&
+        this.price >= 1 &&
+        this.stock >= 1
+      ) {
         console.log("valid false");
-        return false; 
-      }
-       else return true;
-    }
+        return false;
+      } else return true;
+    },
   },
   methods: {
     edit(id) {

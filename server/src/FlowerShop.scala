@@ -12,6 +12,8 @@ class FlowerShop {
   flowers = flowers + ("fid1" -> Flower("fid1", "ros", 10.0, 7))
   flowers = flowers + ("fid2" -> Flower("fid2", "tulpan", 11.0, 9))
   flowers = flowers + ("fid3" -> Flower("fid3", "solros", 7.0, 11))
+  flowers = flowers + ("fid4" -> Flower("fid4", "bakoba", 11.0, 9))
+  flowers = flowers + ("fid5" -> Flower("fid5", "smörblomma", 9.0, 11))
 
   def createID() = UUID.randomUUID.toString()
 
@@ -38,5 +40,7 @@ class FlowerShop {
     val taBortF = flowers.removed(fid)
     flowers = taBortF
   }
-
+  def searchByName(name: String): List[Flower] = {
+    list().filter(f => f.name.toLowerCase.contains(name.toLowerCase))
+  }
 }
